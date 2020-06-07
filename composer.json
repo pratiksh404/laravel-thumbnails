@@ -1,0 +1,14 @@
+{
+    "name": "drh2so4/thumbnail",
+    "description": "Package for making thumbnails instantly.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Pratik Shrestha",
+            "email": "pratikdai404@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
