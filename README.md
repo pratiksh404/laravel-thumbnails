@@ -1,3 +1,8 @@
+![Laravel Thumbnails](https://github.com/pratiksh404/laravel-thumbnails/blob/master/img/laravel-thumbnail.png)
+
+[![Issues](https://img.shields.io/github/issues/pratiksh404/laravel-thumbnails)](https://github.com/pratiksh404/laravel-thumbnails/issues)
+[![Stars](https://img.shields.io/github/stars/pratiksh404/laravel-thumbnails)](https://github.com/pratiksh404/laravel-thumbnails/stargazers)
+
 ## Laravel Thumbnail Generator
 
 Package for uploading the image and saving that image along with it's thumbnail.
@@ -170,6 +175,8 @@ Feel free to change the values
 | Small Thumbnail  | 400   | 300    | 30      |
 
 Don't worry..working on making these thumbnail dynamic.. Stay tuned xoxo.
+
+![Laravel Thumbnails](https://github.com/pratiksh404/laravel-thumbnails/blob/master/img/thumbnails.png)
 
 ### Todos
 
