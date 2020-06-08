@@ -1,14 +1,31 @@
 {
-    "name": "drh2so4/thumbnail",
-    "description": "Package for making thumbnails instantly.",
-    "type": "library",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Pratik Shrestha",
-            "email": "pratikdai404@gmail.com"
-        }
-    ],
-    "minimum-stability": "dev",
-    "require": {}
+  "name": "drh2so4/thumbnail",
+  "description": "Package for making thumbnails instantly.",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Pratik Shrestha",
+      "email": "pratikdai404@gmail.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "intervention/image": "^2.4@dev"
+  },
+  "require-dev": {
+    "orchestra/testbench": "5.x-dev"
+  },
+  "autoload": {
+    "psr-4": {
+      "drh2so4\\Thumbnail\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "drh2so4\\Thumbnail\\ThumbnailServiceProvider"
+      ]
+    }
+  }
 }
