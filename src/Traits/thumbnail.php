@@ -6,7 +6,7 @@ use Intervention\Image\Facades\Image as Image;
 
 trait thumbnail
 {
-    public function makeThumbnail($model, $fieldname = "image")
+    public function makeThumbnail($fieldname = "image")
     {
         if (!empty(request()->$fieldname) && request()->has($fieldname)) {
 
@@ -16,27 +16,28 @@ trait thumbnail
             $filenamewithextension  = $image_file->getClientOriginalName(); //Retriving Full Image Name
             $filename = pathinfo($filenamewithextension, PATHINFO_FILENAME); //Retriving Image Filename only
             $extension = $image_file->getClientOriginalExtension(); //Retriving Image extension
+            $imageStoreNameOnly = $filename . "-" . time(); //Making Image Store name
             $imageStoreName = $filename . "-" . time() . "." . $extension; //Making Image Store name
 
             /* ------------------------------------------------------------------- */
 
             /* ----------------------------------------Image Upload----------------------------------------- */
-            $model->update([
+            $this->update([
                 $fieldname => request()->$fieldname->storeAs(config("thumbnail.storage_path", "upload"), $imageStoreName, 'public')
             ]);
             /* --------------------------------------------------------------------------------------------- */
 
             $image = Image::make(request()->file($fieldname)->getRealPath())->fit(config('thumbnail.img_width', 1000), config('thumbnail.img_height', 800));;
-            $image->save(public_path('storage/' . $model->$fieldname), config('thumbnail.image_quality', 80));
+            $image->save(public_path('storage/' . $this->$fieldname), config('thumbnail.image_quality', 80));
 
             if (config('thumbnail.thumbnail', true)) {
                 /* --------------------- Thumbnail Info--------------------------------- */
 
                 //small thumbnail name
-                $smallthumbnail = $filename .  "-" . time() . '-small' . '.' . $extension; // Making Thumbnail Name
+                $smallthumbnail =  $imageStoreNameOnly  . '-small' . '.' . $extension; // Making Thumbnail Name
 
                 //medium thumbnail name
-                $mediumthumbnail = $filename . "-" . time() . '-medium' . '.' . $extension; // Making Thumbnail Name
+                $mediumthumbnail =  $imageStoreNameOnly  . '-medium' . '.' . $extension; // Making Thumbnail Name
 
                 $small_thumbnail = request()->file($fieldname)->storeAs(config("thumbnail.storage_path", "upload"), $smallthumbnail, 'public'); // Thumbnail Storage Information
                 $medium_thumbnail = request()->file($fieldname)->storeAs(config("thumbnail.storage_path", "upload"), $mediumthumbnail, 'public'); // Thumbnail Storage Information
@@ -62,7 +63,7 @@ trait thumbnail
         $name = basename($image, "." . $extension);
         $thumbnail = $name . "-" . (string) $size . "." . $extension;
         array_pop($path);
-        $thumbnail_path = implode("/", $path) . "/" . $thumbnail;
+        $thumbnail_path = "storage/" . implode("/", $path) . "/" . $thumbnail;
         return $thumbnail_path;
     }
 }
