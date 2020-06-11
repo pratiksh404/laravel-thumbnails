@@ -9,7 +9,19 @@
       "email": "pratikdai404@gmail.com"
     }
   ],
-  "minimum-stability": "dev",
+  "keywords": [
+    "doctype nepal",
+    "doctypenepal",
+    "drh2so4",
+    "pratiksh404",
+    "pratikshrestha",
+    "pratik shrestha",
+    "laravel thumbnail package",
+    "laravel thumbnail",
+    "laravel thumbnail generator",
+    "thumbnail generator"
+  ],
+  "minimum-stability": "beta",
   "require": {
     "intervention/image": "^2.4@dev"
   },
