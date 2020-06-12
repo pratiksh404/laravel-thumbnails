@@ -31,26 +31,39 @@ trait thumbnail
             $image->save(public_path('storage/' . $this->$fieldname), config('thumbnail.image_quality', 80));
 
             if (config('thumbnail.thumbnail', true)) {
-                /* --------------------- Thumbnail Info--------------------------------- */
 
-                //small thumbnail name
-                $smallthumbnail =  $imageStoreNameOnly  . '-small' . '.' . $extension; // Making Thumbnail Name
 
-                //medium thumbnail name
-                $mediumthumbnail =  $imageStoreNameOnly  . '-medium' . '.' . $extension; // Making Thumbnail Name
+                if (config('thumbnail.thumbnails')) {
+                    /* --------------------------------Custom Thumbnails------------------------------------------------- */
+                    foreach (config('thumbnail.thumbnails') as $thumbnail) {
+                        $customthumbnail = $imageStoreNameOnly  . '-' . $thumbnail['thumbnail-name'] . '.' . $extension; // Making Thumbnail Name
+                        $custom_thumbnail = request()->file($fieldname)->storeAs(config("thumbnail.storage_path", "upload"), $customthumbnail, 'public'); // Thumbnail Storage Information
+                        $make_custom_thumbnail = Image::make(request()->file($fieldname)->getRealPath())->fit($thumbnail['thumbnail-width'], $thumbnail['thumbnail-height']); //Storing Thumbnail
+                        $make_custom_thumbnail->save(public_path('storage/' . $custom_thumbnail), $thumbnail['thumbnail-quality']); //Storing Thumbnail
+                    }
+                    /* -------------------------------------------------------------------------------------------------- */
+                } else {
+                    /* --------------------- Thumbnail Info--------------------------------- */
 
-                $small_thumbnail = request()->file($fieldname)->storeAs(config("thumbnail.storage_path", "upload"), $smallthumbnail, 'public'); // Thumbnail Storage Information
-                $medium_thumbnail = request()->file($fieldname)->storeAs(config("thumbnail.storage_path", "upload"), $mediumthumbnail, 'public'); // Thumbnail Storage Information
+                    //small thumbnail name
+                    $smallthumbnail =  $imageStoreNameOnly  . '-small' . '.' . $extension; // Making Thumbnail Name
 
-                /* --------------------------------- Saving Thumbnail------------------------------------ */
+                    //medium thumbnail name
+                    $mediumthumbnail =  $imageStoreNameOnly  . '-medium' . '.' . $extension; // Making Thumbnail Name
 
-                $medium_img = Image::make(request()->file($fieldname)->getRealPath())->fit(config('thumbnail.medium_thumbnail_width', 800), config('thumbnail.medium_thumbnail_height', 600)); //Storing Thumbnail
-                $medium_img->save(public_path('storage/' . $medium_thumbnail), config('thumbnail.medium_thumbnail_quality', 60)); //Storing Thumbnail
+                    $small_thumbnail = request()->file($fieldname)->storeAs(config("thumbnail.storage_path", "upload"), $smallthumbnail, 'public'); // Thumbnail Storage Information
+                    $medium_thumbnail = request()->file($fieldname)->storeAs(config("thumbnail.storage_path", "upload"), $mediumthumbnail, 'public'); // Thumbnail Storage Information
 
-                $small_img = Image::make(request()->file($fieldname)->getRealPath())->fit(config('thumbnail.small_thumbnail_width', 400), config('thumbnail.small_thumbnail_height', 300)); //Storing Thumbnail
-                $small_img->save(public_path('storage/' . $small_thumbnail), config('thumbnail.small_thumbnail_quality', 30)); //Storing Thumbnail
+                    /* --------------------------------- Saving Thumbnail------------------------------------ */
 
-                /* ------------------------------------------------------------------------------------- */
+                    $medium_img = Image::make(request()->file($fieldname)->getRealPath())->fit(config('thumbnail.medium_thumbnail_width', 800), config('thumbnail.medium_thumbnail_height', 600)); //Storing Thumbnail
+                    $medium_img->save(public_path('storage/' . $medium_thumbnail), config('thumbnail.medium_thumbnail_quality', 60)); //Storing Thumbnail
+
+                    $small_img = Image::make(request()->file($fieldname)->getRealPath())->fit(config('thumbnail.small_thumbnail_width', 400), config('thumbnail.small_thumbnail_height', 300)); //Storing Thumbnail
+                    $small_img->save(public_path('storage/' . $small_thumbnail), config('thumbnail.small_thumbnail_quality', 30)); //Storing Thumbnail
+
+                    /* ------------------------------------------------------------------------------------- */
+                }
             }
         }
     }
