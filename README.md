@@ -90,6 +90,17 @@ Just call as following
     @endforeach
 ```
 
+if you are using custom thumbnail configured from config file just call as follows
+
+```sh
+    @foreach ($images as $image)
+        <img src="{{asset($image->thumbnail('test-small'))}}"> // For small thumbnail
+    <img src="{{asset($image->thumbnail('test-medium'))}}"> // For medium thumbnail
+    @endforeach
+```
+
+Notice that parameter of function thumbnail is string same as value given for "thumbnail-name" in config file.
+
 Thumbnail's image property is predefined but if you wish to change that publish it's config file thumbnail.php
 
 ```sh
@@ -158,7 +169,30 @@ return [
     |
     */
 
-    "storage_path" => "uploads"
+    "storage_path" => "uploads",
+
+    /*
+    |--------------------------------------------------------------------------
+    | Custom Thumbnail Creation
+    |--------------------------------------------------------------------------
+    | Uncomment to create...
+    |
+    */
+
+    /*     "thumbnails" => [
+        [
+            "thumbnail-name" => "medium",
+            "thumbnail-width" => 800,
+            "thumbnail-height" => 600,
+            "thumbnail-quality" => 60
+        ],
+        [
+            "thumbnail-name" => "small",
+            "thumbnail-width" => 400,
+            "thumbnail-height" => 300,
+            "thumbnail-quality" => 30
+        ]
+    ] */
 
 ];
 
