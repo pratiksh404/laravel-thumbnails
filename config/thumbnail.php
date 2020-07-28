@@ -8,7 +8,7 @@ return [
     |  Thumbnail Feature
     |--------------------------------------------------------------------------
     |
-    | This option defines whether to use Package's Thumbnail Featured or not
+    | This option defines whether to use Package's Thumbnail feature or not
     | Default option is true
     | 
     */

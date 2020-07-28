@@ -6,8 +6,9 @@ use Intervention\Image\Facades\Image as Image;
 
 trait thumbnail
 {
-    public function makeThumbnail($fieldname = "image")
+    public function makeThumbnail($fieldname = "image", $custom = [])
     {
+
         if (!empty(request()->$fieldname) && request()->has($fieldname)) {
 
             /* ------------------------------------------------------------------- */
@@ -23,28 +24,27 @@ trait thumbnail
 
             /* ----------------------------------------Image Upload----------------------------------------- */
             $this->update([
-                $fieldname => request()->$fieldname->storeAs(config("thumbnail.storage_path", "upload"), $imageStoreName, 'public')
+                $fieldname => request()->$fieldname->storeAs($custom['storage'] ?? config("thumbnail.storage_path", "uploads"), $imageStoreName, 'public')
             ]);
             /* --------------------------------------------------------------------------------------------- */
 
-            $image = Image::make(request()->file($fieldname)->getRealPath())->fit(config('thumbnail.img_width', 1000), config('thumbnail.img_height', 800));;
-            $image->save(public_path('storage/' . $this->$fieldname), config('thumbnail.image_quality', 80));
+            $image = Image::make(request()->file($fieldname)->getRealPath())->fit($custom['width'] ?? config('thumbnail.img_width', 1000), $custom['height'] ?? config('thumbnail.img_height', 800));
+            $image->save(public_path('storage/' . $this->$fieldname), $custom['quality'] ?? config('thumbnail.image_quality', 80));
 
             if (config('thumbnail.thumbnail', true)) {
-
-
-                if (config('thumbnail.thumbnails')) {
+                $thumbnails = false;
+                $thumbnails = $custom['thumbnails'] ?? config('thumbnail.thumbnails', false) ?? false;
+                if ($thumbnails) {
                     /* --------------------------------Custom Thumbnails------------------------------------------------- */
-                    foreach (config('thumbnail.thumbnails') as $thumbnail) {
+                    foreach ($thumbnails as $thumbnail) {
                         $customthumbnail = $imageStoreNameOnly  . '-' . $thumbnail['thumbnail-name'] . '.' . $extension; // Making Thumbnail Name
-                        $custom_thumbnail = request()->file($fieldname)->storeAs(config("thumbnail.storage_path", "upload"), $customthumbnail, 'public'); // Thumbnail Storage Information
+                        $custom_thumbnail = request()->file($fieldname)->storeAs($custom['storage'] ?? config("thumbnail.storage_path", "upload"), $customthumbnail, 'public'); // Thumbnail Storage Information
                         $make_custom_thumbnail = Image::make(request()->file($fieldname)->getRealPath())->fit($thumbnail['thumbnail-width'], $thumbnail['thumbnail-height']); //Storing Thumbnail
                         $make_custom_thumbnail->save(public_path('storage/' . $custom_thumbnail), $thumbnail['thumbnail-quality']); //Storing Thumbnail
                     }
                     /* -------------------------------------------------------------------------------------------------- */
                 } else {
                     /* --------------------- Thumbnail Info--------------------------------- */
-
                     //small thumbnail name
                     $smallthumbnail =  $imageStoreNameOnly  . '-small' . '.' . $extension; // Making Thumbnail Name
 
@@ -68,9 +68,9 @@ trait thumbnail
         }
     }
 
-    public function thumbnail($size)
+    public function thumbnail($fieldname = "image", $size)
     {
-        $image = $this->image;
+        $image = $this->$fieldname;
         $path = explode("/", $image);
         $extension = \File::extension($image);
         $name = basename($image, "." . $extension);
