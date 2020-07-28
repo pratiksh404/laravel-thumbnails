@@ -1,7 +1,6 @@
 ![Laravel Thumbnails](https://github.com/pratiksh404/laravel-thumbnails/blob/master/img/laravel-thumbnail.png)
 
-[![Issues](https://img.shields.io/github/issues/pratiksh404/laravel-thumbnails)](https://github.com/pratiksh404/laravel-thumbnails/issues)
-[![Stars](https://img.shields.io/github/stars/pratiksh404/laravel-thumbnails)](https://github.com/pratiksh404/laravel-thumbnails/stargazers)
+[![Issues](https://img.shields.io/github/issues/pratiksh404/laravel-thumbnails)](https://github.com/pratiksh404/laravel-thumbnails/issues) [![Stars](https://img.shields.io/github/stars/pratiksh404/laravel-thumbnails)](https://github.com/pratiksh404/laravel-thumbnails/stargazers) [![Latest Stable Version](https://poser.pugx.org/drh2so4/thumbnail/v)](//packagist.org/packages/drh2so4/thumbnail) [![Total Downloads](https://poser.pugx.org/drh2so4/thumbnail/downloads)](//packagist.org/packages/drh2so4/thumbnail) [![License](https://poser.pugx.org/drh2so4/thumbnail/license)](//packagist.org/packages/drh2so4/thumbnail)
 
 ## Laravel Thumbnail Generator
 
@@ -79,23 +78,100 @@ What about thumbnail...
 well thumbnail uses it's parent image name followed by -size
 i.e batman-1521549-medium-jpg, batman-1521549-small.jpg
 
+## How to make thumbnail ?
+
+There are the options you can have for making thumbnails :-
+
+- Default Option
+- Universal Custom Thumbnails
+- Specfic Custom Thumbnails
+
+### Default Option
+
+you can just call the following and the packages will handle the rest
+
+```sh
+
+    $image->makeThumbnail('image'); //Here the first parameter is image attribute name saved in db
+
+```
+
+Note : if the attribute dedicated for storing image is named 'image' you don't have to pass image attribute name jusr use \$image->makeThumbnail();
+
+### Universal Custom Thumbnails
+
+here you should mention the thumbnails that you want to be applied on every case.
+when you publish thumbnail.php config file you will find 'thumbnails' property where you can mention your custom thumbnails
+
+```sh
+    /*
+    |--------------------------------------------------------------------------
+    | Custom Thumbnail Creation
+    |--------------------------------------------------------------------------
+    | Uncomment to create...
+    */
+
+    /*     "thumbnails" => [
+        [
+            "thumbnail-name" => "medium",
+            "thumbnail-width" => 800,
+            "thumbnail-height" => 600,
+            "thumbnail-quality" => 60
+        ],
+        [
+            "thumbnail-name" => "small",
+            "thumbnail-width" => 400,
+            "thumbnail-height" => 300,
+            "thumbnail-quality" => 30
+        ]
+    ] */
+```
+
+Note: This will override default option
+
+### Specfic Custom Thumbnails
+
+Suppose you have applied Universal Custom Thumbnails but need to have changes for specific image field then you can pass array of custom requirements :
+
+```sh
+        $thumbnails = [
+            'storage' => 'customs/embed',
+            'width' => '600',
+            'height' => '400',
+            'quality' => '70',
+            'thumbnails' => [
+                [
+                    'thumbnail-name' => 'customSmall',
+                    'thumbnail-width' => '300',
+                    'thumbnail-height' => '200',
+                    'thumbnail-quality' => '50'
+                ]
+            ]
+        ];
+        $image->makeThumbnail('image', $thumbnails);
+```
+
 ## How to use thumbnail ?
 
 Just call as following
 
 ```sh
+// Here the first parameter 'image' is the name of sttribute that is saved in db for image
+
     @foreach ($images as $image)
-        <img src="{{asset($image->thumbnail('small'))}}"> // For small thumbnail
-    <img src="{{asset($image->thumbnail('medium'))}}"> // For medium thumbnail
+        <img src="{{asset($image->thumbnail('image','small'))}}"> // For small thumbnail
+    <img src="{{asset($image->thumbnail('image','medium'))}}"> // For medium thumbnail
     @endforeach
 ```
 
 if you are using custom thumbnail configured from config file just call as follows
 
 ```sh
+// Here the first parameter 'image' is the name of sttribute that is saved in db for image
+// Second parameter is the name of thumbnail that you gave in 'thumbnail-name' in the config file on custom thumbnail field called 'thumbnails'
     @foreach ($images as $image)
-        <img src="{{asset($image->thumbnail('test-small'))}}"> // For small thumbnail
-    <img src="{{asset($image->thumbnail('test-medium'))}}"> // For medium thumbnail
+        <img src="{{asset($image->thumbnail('image','small'))}}"> // For small thumbnail
+    <img src="{{asset($image->thumbnail('image','medium'))}}"> // For medium thumbnail
     @endforeach
 ```
 
@@ -120,7 +196,7 @@ return [
     |  Thumbnail Feature
     |--------------------------------------------------------------------------
     |
-    | This option defines whether to use Package's Thumbnail Featured or not
+    | This option defines whether to use Package's Thumbnail feature or not
     | Default option is true
     |
     */
@@ -176,7 +252,6 @@ return [
     | Custom Thumbnail Creation
     |--------------------------------------------------------------------------
     | Uncomment to create...
-    |
     */
 
     /*     "thumbnails" => [
@@ -191,16 +266,17 @@ return [
             "thumbnail-width" => 400,
             "thumbnail-height" => 300,
             "thumbnail-quality" => 30
-        ]
-    ] */
-
+        ],
+        "thumbnails_storage" => "uploads",
+        ] */
 ];
+
 
 ```
 
 Feel free to change the values
 
-## Thumbnail
+## Default Thumbnail Image Properties
 
 | Thumbnail        | Width | Height | Quality |
 | ---------------- | ----- | ------ | ------- |
@@ -208,14 +284,12 @@ Feel free to change the values
 | Medium Thumbnail | 800   | 600    | 60      |
 | Small Thumbnail  | 400   | 300    | 30      |
 
-Don't worry..working on making these thumbnail dynamic.. Stay tuned xoxo.
-
 ![Laravel Thumbnails](https://github.com/pratiksh404/laravel-thumbnails/blob/master/img/thumbnails.png)
 
 ### Todos
 
-- Dyanmic Thumbnail Categories
-- More Functionality
+- Error Handling
+- Image Caching
 - Maintainabilty
 
 ## Package Used
@@ -226,4 +300,4 @@ Don't worry..working on making these thumbnail dynamic.. Stay tuned xoxo.
 
 MIT
 
-**DOCTYPE NEPAL ||DR.H2SO4**
+**DOCTYPE NEPAL || DR.H2SO4**

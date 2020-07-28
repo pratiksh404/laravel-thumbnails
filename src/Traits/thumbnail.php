@@ -34,11 +34,12 @@ trait thumbnail
             if (config('thumbnail.thumbnail', true)) {
                 $thumbnails = false;
                 $thumbnails = $custom['thumbnails'] ?? config('thumbnail.thumbnails', false) ?? false;
+                $storage = $custom['storage'] ?? config('thumbnail.thumbnails_storage', false) ?? false;
                 if ($thumbnails) {
                     /* --------------------------------Custom Thumbnails------------------------------------------------- */
                     foreach ($thumbnails as $thumbnail) {
                         $customthumbnail = $imageStoreNameOnly  . '-' . $thumbnail['thumbnail-name'] . '.' . $extension; // Making Thumbnail Name
-                        $custom_thumbnail = request()->file($fieldname)->storeAs($custom['storage'] ?? config("thumbnail.storage_path", "upload"), $customthumbnail, 'public'); // Thumbnail Storage Information
+                        $custom_thumbnail = request()->file($fieldname)->storeAs($storage ?? config("thumbnail.storage_path", "uploads"), $customthumbnail, 'public'); // Thumbnail Storage Information
                         $make_custom_thumbnail = Image::make(request()->file($fieldname)->getRealPath())->fit($thumbnail['thumbnail-width'], $thumbnail['thumbnail-height']); //Storing Thumbnail
                         $make_custom_thumbnail->save(public_path('storage/' . $custom_thumbnail), $thumbnail['thumbnail-quality']); //Storing Thumbnail
                     }
@@ -51,8 +52,8 @@ trait thumbnail
                     //medium thumbnail name
                     $mediumthumbnail =  $imageStoreNameOnly  . '-medium' . '.' . $extension; // Making Thumbnail Name
 
-                    $small_thumbnail = request()->file($fieldname)->storeAs(config("thumbnail.storage_path", "upload"), $smallthumbnail, 'public'); // Thumbnail Storage Information
-                    $medium_thumbnail = request()->file($fieldname)->storeAs(config("thumbnail.storage_path", "upload"), $mediumthumbnail, 'public'); // Thumbnail Storage Information
+                    $small_thumbnail = request()->file($fieldname)->storeAs(config("thumbnail.storage_path", "uploads"), $smallthumbnail, 'public'); // Thumbnail Storage Information
+                    $medium_thumbnail = request()->file($fieldname)->storeAs(config("thumbnail.storage_path", "uploads"), $mediumthumbnail, 'public'); // Thumbnail Storage Information
 
                     /* --------------------------------- Saving Thumbnail------------------------------------ */
 

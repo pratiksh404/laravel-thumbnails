@@ -78,7 +78,7 @@ return [
             "thumbnail-width" => 400,
             "thumbnail-height" => 300,
             "thumbnail-quality" => 30
-        ]
-    ] */
-
+        ],
+        "thumbnails_storage" => "uploads",     
+        ] */
 ];
