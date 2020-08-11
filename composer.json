@@ -21,7 +21,7 @@
     "laravel thumbnail generator",
     "thumbnail generator"
   ],
-  "minimum-stability": "beta",
+  "minimum-stability": "stable",
   "require": {
     "intervention/image": "^2.4@dev"
   },

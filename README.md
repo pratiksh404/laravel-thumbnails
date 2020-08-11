@@ -36,7 +36,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Image extends Model
 {
-    use thumbnail;
+    use Thumbnail;
 
     protected $fillable = ['image'];
 }
