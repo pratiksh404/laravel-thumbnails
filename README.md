@@ -1,6 +1,6 @@
 ![Laravel Thumbnails](https://github.com/pratiksh404/laravel-thumbnails/blob/master/img/laravel-thumbnail.png)
 
-[![Issues](https://img.shields.io/github/issues/pratiksh404/laravel-thumbnails)](https://github.com/pratiksh404/laravel-thumbnails/issues) [![Stars](https://img.shields.io/github/stars/pratiksh404/laravel-thumbnails)](https://github.com/pratiksh404/laravel-thumbnails/stargazers) [![Latest Stable Version](https://poser.pugx.org/drh2so4/thumbnail/v)](//packagist.org/packages/drh2so4/thumbnail) [![Total Downloads](https://poser.pugx.org/drh2so4/thumbnail/downloads)](//packagist.org/packages/drh2so4/thumbnail) [![License](https://poser.pugx.org/drh2so4/thumbnail/license)](//packagist.org/packages/drh2so4/thumbnail)
+[![Issues](https://img.shields.io/github/issues/pratiksh404/laravel-thumbnails)](https://github.com/pratiksh404/laravel-thumbnails/issues) [![Stars](https://img.shields.io/github/stars/pratiksh404/laravel-thumbnails)](https://github.com/pratiksh404/laravel-thumbnails/stargazers) [![Latest Stable Version](https://poser.pugx.org/drh2so4/thumbnail/v)](//packagist.org/packages/drh2so4/thumbnail) [![Total Downloads](https://poser.pugx.org/drh2so4/thumbnail/downloads)](//packagist.org/packages/drh2so4/thumbnail) [![License](https://poser.pugx.org/drh2so4/thumbnail/license)](//packagist.org/packages/drh2so4/thumbnail) (https://img.shields.io/badge/Featured-Laravel%20News-blue)](https://github.com/pratiksh404)
 
 ## Laravel Thumbnail Generator
 
