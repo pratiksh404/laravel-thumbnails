@@ -31,7 +31,7 @@ trait Thumbnail
 
             $image = Image::cache(function ($cached_img) use ($image_file, $custom) {
                 return $cached_img->make($image_file->getRealPath())->fit($custom['width'] ?? config('thumbnail.img_width', 1000), $custom['height'] ?? config('thumbnail.img_height', 800));
-            }, 10, true);
+            }, config('thumbnail.image_cached_time', 10), true);
             $image->save(public_path('storage/' . $this->$fieldname), $custom['quality'] ?? config('thumbnail.image_quality', 80));
 
             if (config('thumbnail.thumbnail', true)) {
@@ -45,7 +45,7 @@ trait Thumbnail
                         $custom_thumbnail = $image_file->storeAs($storage ?? config("thumbnail.storage_path", "uploads"), $customthumbnail, 'public'); // Thumbnail Storage Information
                         $make_custom_thumbnail = Image::cache(function ($cached_img) use ($image_file, $thumbnail) {
                             return $cached_img->make($image_file->getRealPath())->fit($thumbnail['thumbnail-width'], $thumbnail['thumbnail-height']);
-                        }, 10, true); //Storing Thumbnail
+                        }, config('thumbnail.image_cached_time', 10), true); //Storing Thumbnail
                         $make_custom_thumbnail->save(public_path('storage/' . $custom_thumbnail), $thumbnail['thumbnail-quality']); //Storing Thumbnail
                     }
                     /* -------------------------------------------------------------------------------------------------- */
@@ -64,13 +64,13 @@ trait Thumbnail
 
                     $medium_img = Image::cache(function ($cached_img) use ($image_file) {
                         return $cached_img->make($image_file->getRealPath())->fit(config('thumbnail.medium_thumbnail_width', 800), config('thumbnail.medium_thumbnail_height', 600)); //Storing Thumbnail
-                    }, 10, true);
+                    }, config('thumbnail.image_cached_time', 10), true);
 
                     $medium_img->save(public_path('storage/' . $medium_thumbnail), config('thumbnail.medium_thumbnail_quality', 60)); //Storing Thumbnail
 
                     $small_img = Image::cache(function ($cached_img) use ($image_file) {
                         return $cached_img->make($image_file->getRealPath())->fit(config('thumbnail.small_thumbnail_width', 400), config('thumbnail.small_thumbnail_height', 300)); //Storing Thumbnail
-                    }, 10, true);
+                    }, config('thumbnail.image_cached_time', 10), true);
 
                     $small_img->save(public_path('storage/' . $small_thumbnail), config('thumbnail.small_thumbnail_quality', 30)); //Storing Thumbnail
 
