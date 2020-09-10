@@ -22,7 +22,7 @@ class ThumbnailServiceProvider extends ServiceProvider
     {
         /* Config File Publishing */
         $this->publishes([
-            __DIR__ . '/../config/thumbnail.php' => config_path('thumbnail.php')
+            __DIR__.'/../config/thumbnail.php' => config_path('thumbnail.php'),
         ], 'thumbnail-config');
     }
 }
