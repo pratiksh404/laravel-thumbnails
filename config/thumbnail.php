@@ -2,7 +2,6 @@
 
 return [
 
-
     /*
     |--------------------------------------------------------------------------
     |  Thumbnail Feature
@@ -10,7 +9,7 @@ return [
     |
     | This option defines whether to use Package's Thumbnail feature or not
     | Default option is true
-    | 
+    |
     */
     'thumbnail' => true,
 
@@ -20,13 +19,13 @@ return [
     |--------------------------------------------------------------------------
     |
     | These options are default post image and its thumbnail quality
-    | 
-    | 
+    |
+    |
     */
 
-    'image_quality' => 80,
+    'image_quality'            => 80,
     'medium_thumbnail_quality' => 60,
-    'small_thumbnail_quality' => 30,
+    'small_thumbnail_quality'  => 30,
 
     /*
     |--------------------------------------------------------------------------
@@ -34,17 +33,17 @@ return [
     |--------------------------------------------------------------------------
     |
     | These options is default post imahe height and width fit size
-    | 
-    | 
+    |
+    |
     */
 
-    'img_width' => 1000,
+    'img_width'  => 1000,
     'img_height' => 800,
 
-    'medium_thumbnail_width' => 800,
+    'medium_thumbnail_width'  => 800,
     'medium_thumbnail_height' => 600,
 
-    'small_thumbnail_width' => 400,
+    'small_thumbnail_width'  => 400,
     'small_thumbnail_height' => 300,
 
     /*
@@ -53,11 +52,11 @@ return [
     |--------------------------------------------------------------------------
     |
     | Define your default image storage location along with its thumbnail
-    | 
-    | 
+    |
+    |
     */
 
-    "storage_path" => "uploads",
+    'storage_path' => 'uploads',
 
     /*
     |--------------------------------------------------------------------------
@@ -65,8 +64,8 @@ return [
     |--------------------------------------------------------------------------
     |
     | Option for setting image cached time
-    | 
-    | 
+    |
+    |
     */
 
     'image_cached_time' => 10,
@@ -74,7 +73,7 @@ return [
     /*
     |--------------------------------------------------------------------------
     | Custom Thumbnail Creation
-    |-------------------------------------------------------------------------- 
+    |--------------------------------------------------------------------------
     | Uncomment to create...
     */
 
@@ -91,6 +90,6 @@ return [
             "thumbnail-height" => 300,
             "thumbnail-quality" => 30
         ],
-        "thumbnails_storage" => "uploads",     
+        "thumbnails_storage" => "uploads",
         ] */
 ];
