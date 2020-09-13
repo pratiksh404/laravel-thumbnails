@@ -82,7 +82,7 @@ trait Thumbnail
     // Make Default Thumbnail
     private function makeDefaultThumbnails($image_file, $extension, $imageStoreNameOnly)
     {
-        /* --------------------- Thumbnail Info--------------------------------- */
+        /* --------------------- Thumbnail Info---------------------------------------- */
         //small thumbnail name
         $smallthumbnail = $imageStoreNameOnly . '-small' . '.' . $extension; // Making Thumbnail Name
 
