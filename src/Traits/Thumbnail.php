@@ -10,7 +10,7 @@ trait Thumbnail
 {
     public function makeThumbnail($fieldname = 'image', $custom = [])
     {
-        if (!empty(request()->$fieldname) && request()->has($fieldname) || $custom['image']) {
+        if (! empty(request()->$fieldname) && request()->has($fieldname) || $custom['image']) {
 
             /* ------------------------------------------------------------------- */
 
@@ -19,8 +19,8 @@ trait Thumbnail
             $raw_filename = pathinfo($filenamewithextension, PATHINFO_FILENAME); //Retriving Image Raw Filename only
             $filename = str_replace('-', '', $raw_filename); // Retrive Filename
             $extension = $image_file->getClientOriginalExtension(); //Retriving Image extension
-            $imageStoreNameOnly = $filename . '-' . time(); //Making Image Store name
-            $imageStoreName = $filename . '-' . time() . '.' . $extension; //Making Image Store name
+            $imageStoreNameOnly = $filename.'-'.time(); //Making Image Store name
+            $imageStoreName = $filename.'-'.time().'.'.$extension; //Making Image Store name
 
             /* ------------------------------------------------------------------- */
 
@@ -34,7 +34,7 @@ trait Thumbnail
             $image = Image::cache(function ($cached_img) use ($image_file, $custom) {
                 return $cached_img->make($image_file->getRealPath())->fit($custom['width'] ?? config('thumbnail.img_width', 1000), $custom['height'] ?? config('thumbnail.img_height', 800)); //Parent Image Interventing
             }, config('thumbnail.image_cached_time', 10), true);
-            $image->save(public_path('storage/' . $this->$fieldname), $custom['quality'] ?? config('thumbnail.image_quality', 80)); // Parent Image Locating Save
+            $image->save(public_path('storage/'.$this->$fieldname), $custom['quality'] ?? config('thumbnail.image_quality', 80)); // Parent Image Locating Save
 
             if (config('thumbnail.thumbnail', true)) {
                 $thumbnails = false;
@@ -43,7 +43,7 @@ trait Thumbnail
                 if ($thumbnails) {
                     /* -----------------------------------------Custom Thumbnails------------------------------------------------- */
                     $this->makeCustomThumbnails($image_file, $imageStoreNameOnly, $extension, $storage, $thumbnails);
-                    /* -------------------------------------------------------------------------------------------------- */
+                /* -------------------------------------------------------------------------------------------------- */
                 } else {
                     /* ---------------------------------------Default Thumbnails--------------------------------------- */
                     $this->makeDefaultThumbnails($image_file, $extension, $imageStoreNameOnly);
@@ -60,14 +60,14 @@ trait Thumbnail
         $img = Image::cache(function ($cached_img) use ($image_file, $width, $height) {
             return $cached_img->make($image_file->getRealPath())->fit($width, $height);
         }, config('thumbnail.image_cached_time', 10), true); //Storing Thumbnail
-        $img->save(public_path('storage/' . $image), $quality); //Storing Thumbnail
+        $img->save(public_path('storage/'.$image), $quality); //Storing Thumbnail
     }
 
     // Make Custom Thumbnail
     private function makeCustomThumbnails($image_file, $imageStoreNameOnly, $extension, $storage, $thumbnails)
     {
         foreach ($thumbnails as $thumbnail) {
-            $customthumbnail = $imageStoreNameOnly . '-' . str_replace('-', '', $thumbnail['thumbnail-name']) . '.' . $extension; // Making Thumbnail Name
+            $customthumbnail = $imageStoreNameOnly.'-'.str_replace('-', '', $thumbnail['thumbnail-name']).'.'.$extension; // Making Thumbnail Name
             $this->makeImg(
                 $image_file,
                 $customthumbnail,
@@ -84,10 +84,10 @@ trait Thumbnail
     {
         /* --------------------- Thumbnail Info---------------------------------------- */
         //small thumbnail name
-        $smallthumbnail = $imageStoreNameOnly . '-small' . '.' . $extension; // Making Thumbnail Name
+        $smallthumbnail = $imageStoreNameOnly.'-small'.'.'.$extension; // Making Thumbnail Name
 
         //medium thumbnail name
-        $mediumthumbnail = $imageStoreNameOnly . '-medium' . '.' . $extension; // Making Thumbnail Name
+        $mediumthumbnail = $imageStoreNameOnly.'-medium'.'.'.$extension; // Making Thumbnail Name
 
         // Medium Thumbnail
         $this->makeImg(
@@ -142,12 +142,12 @@ trait Thumbnail
         $image = $this->$fieldname;
         $path = explode('/', $image);
         $extension = \File::extension($image);
-        $name = basename($image, '.' . $extension);
-        $image_fullname = isset($size) ? $name . '-' . (string) $size . '.' . $extension : $name . '.' . $extension;
+        $name = basename($image, '.'.$extension);
+        $image_fullname = isset($size) ? $name.'-'.(string) $size.'.'.$extension : $name.'.'.$extension;
         array_pop($path);
         $location = implode('/', $path);
-        $path = 'storage/' . $location . '/' . $image_fullname;
-        $image_files = File::files(public_path('storage/' . $location));
+        $path = 'storage/'.$location.'/'.$image_fullname;
+        $image_files = File::files(public_path('storage/'.$location));
         $images_property = $this->imageProperty($image_files);
         $image_detail = [
             'image'     => $image,
@@ -155,8 +155,8 @@ trait Thumbnail
             'fullname'  => $image_fullname,
             'extension' => $extension,
             'path'      => $path,
-            'directory' => public_path('storage/' . $location),
-            'location'  => public_path('storage/' . $image),
+            'directory' => public_path('storage/'.$location),
+            'location'  => public_path('storage/'.$image),
             'property'  => $images_property,
         ];
 
