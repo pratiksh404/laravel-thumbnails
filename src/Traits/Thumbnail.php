@@ -42,7 +42,7 @@ trait Thumbnail
                 $storage = $custom['storage'] ?? config('thumbnail.storage_path', 'uploads') ?? false;
                 if ($thumbnails) {
                     /* -----------------------------------------Custom Thumbnails------------------------------------------------- */
-                    $this->makeCustomThumbnails($image_file, $imageStoreNameOnly, $storage, $thumbnails);
+                    $this->makeCustomThumbnails($image_file, $imageStoreNameOnly, $extension, $storage, $thumbnails);
                     /* -------------------------------------------------------------------------------------------------- */
                 } else {
                     /* ---------------------------------------Default Thumbnails--------------------------------------- */
@@ -64,7 +64,7 @@ trait Thumbnail
     }
 
     // Make Custom Thumbnail
-    private function makeCustomThumbnails($image_file, $imageStoreNameOnly, $storage, $thumbnails)
+    private function makeCustomThumbnails($image_file, $imageStoreNameOnly, $extension, $storage, $thumbnails)
     {
         foreach ($thumbnails as $thumbnail) {
             $customthumbnail = $imageStoreNameOnly . '-' . str_replace('-', '', $thumbnail['thumbnail-name']) . '.' . $extension; // Making Thumbnail Name

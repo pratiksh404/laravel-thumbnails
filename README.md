@@ -151,6 +151,43 @@ Suppose you have applied Universal Custom Thumbnails but need to have changes fo
         $image->makeThumbnail('image', $thumbnails);
 ```
 
+### How about multiple image uploads
+
+If you are performing multiple image upload at once pass image key to thumbnail array.
+here \$img is one of the image in chunk of images passed
+
+```sh
+// Controller Store Method
+public function store(Request $request)
+{
+    $image = Image::create(['images'=>$request->images]);
+    foreach($request->images as $img)
+    {
+        $this->multipleImageUpload($image,$img);
+    }
+}
+// Multiple Image Upload
+    private function multipleImageUpload($image, $img)
+    {
+        $multiple = [
+            'storage' => 'custom_test/folder/another_folder/image',
+            'width' => '600',
+            'height' => '400',
+            'quality' => '70',
+            'image' => $img,
+            'thumbnails' => [
+                [
+                    'thumbnail-name' => 'small',
+                    'thumbnail-width' => '300',
+                    'thumbnail-height' => '200',
+                    'thumbnail-quality' => '50'
+                ]
+            ]
+        ];
+        $image->makeThumbnail('image', $multiple);
+    }
+```
+
 ## How to use thumbnail ?
 
 Just call as following
@@ -181,6 +218,70 @@ Thumbnail's image property is predefined but if you wish to change that publish 
 
 ```sh
 php artisan vendor:publish --tag=thumbnail-config
+```
+
+### Image Property
+
+You can obtaing the detail image property by using method imageDetail($image,$size)
+
+```sh
+// imageDetail method takes two parameter
+// Model image attribute name (Mandatory)
+// If you want thumbnail property pass its size (optional)
+
+$image->imageDetail('image'); // Parent Image Detail Property
+$image->imageDetail('image','small') // Small thumbnail related to parent image
+```
+
+### What Image Property/Detail Gives
+
+## Default Thumbnail Image Properties
+
+| Property  | Return Type | Description                           | Example                                  |
+| --------- | ----------- | ------------------------------------- | ---------------------------------------- |
+| image     | string      | Image path stored in DB               | \$image->imageDetail('image')->image     |
+| name      | string      | Image Stored Name (without extension) | \$image->imageDetail('image')->name      |
+| fullname  | string      | Image Stored Name (with extension)    | \$image->imageDetail('image')->fullname  |
+| extension | string      | Image Extension Name                  | \$image->imageDetail('image')->extension |
+| path      | string      | Image Storage Path                    | \$image->imageDetail('image')->path      |
+| directory | string      | Image Stored Directory                | \$image->imageDetail('image')->directory |
+| location  | string      | Image Full Location Path              | \$image->imageDetail('image')->location  |
+| property  | array       | Image Property array                  | \$image->imageDetail('image')->property  |
+
+Image Property array (\$image->imageDetail('image')->property)
+
+| Property        | Return Type | Description                                        | Example                                                  |
+| --------------- | ----------- | -------------------------------------------------- | -------------------------------------------------------- |
+| real_name       | string      | Image Real Name (without timestamp and size label) | \$image->imageDetail('image')->property->name            |
+| size            | integer     | Image Storage Size                                 | \$image->imageDetail('image')->property->fullname        |
+| directory       | string      | Image Stored Directory                             | \$image->imageDetail('image')->property->directory       |
+| location        | string      | Image Full Location Path                           | \$image->imageDetail('image')->property->location        |
+| has_thumbnail   | boolean     | Image's Thumbnail Check                            | \$image->imageDetail('image')->property->has_thumbnail   |
+| thumbnail_count | integer     | Image Thumbnail Count                              | \$image->imageDetail('image')->property->thumbnail_count |
+| thumbnails      | array       | Return all thumbnail Detail                        | \$image->imageDetail('image')->property->thumbnails      |
+
+Image Thumbnail Property
+| Property | Return Type | Description  
+| --------------- | ----------- | --------------------------------------------------
+| image | string | Thumbnail Name  
+| real_name | string | Thumbnail Real Name (without timestamp and size label)
+| size | integer | Thumbnail Storage Size  
+| created_date | Carbon | Thumbnail Created Date  
+| path | string | Thumbnail Storage Path  
+| directory | string | Thumbnail Stored Directory  
+| location | string | Thumbnail Full Location Path
+
+### Check if image has thumbnail
+
+```sh
+$image->hasThumbnail('image'); // Check for any availabe thumbnail
+$image->hasThumbnail('image','small'); // Second paremater is thumbnail size check
+```
+
+### Obtain Image Thumbnail Count
+
+```sh
+$image->thumbnailCount('image');
 ```
 
 Our config file looks like follows :-
