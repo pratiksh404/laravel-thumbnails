@@ -10,40 +10,27 @@ trait Thumbnail
 {
     public function makeThumbnail($fieldname = 'image', $custom = [])
     {
-        if (! empty(request()->$fieldname) && request()->has($fieldname) || $custom['image']) {
+        if (!empty(request()->$fieldname) || $custom['image']) {
+            /* ------------------------------------------------------------------- */
+
+            $image_file = $custom['image'] ?? request()->file($fieldname); // Retriving Image File   
+            $extension = $this->image_info($image_file)->extension; //Retriving Image extension
+            $imageStoreNameOnly = $this->image_info($image_file)->imageStoreNameOnly; //Making Image Store name
+
 
             /* ------------------------------------------------------------------- */
 
-            $image_file = $custom['image'] ?? request()->file($fieldname); // Retriving Image File
-            $filenamewithextension = $image_file->getClientOriginalName(); //Retriving Full Image Name
-            $raw_filename = pathinfo($filenamewithextension, PATHINFO_FILENAME); //Retriving Image Raw Filename only
-            $filename = str_replace('-', '', $raw_filename); // Retrive Filename
-            $extension = $image_file->getClientOriginalExtension(); //Retriving Image extension
-            $imageStoreNameOnly = $filename.'-'.time(); //Making Image Store name
-            $imageStoreName = $filename.'-'.time().'.'.$extension; //Making Image Store name
-
-            /* ------------------------------------------------------------------- */
-
-            /* ----------------------------------------Image Upload----------------------------------------- */
-            $img = $custom['image'] ?? request()->$fieldname;
-            $this->update([
-                $fieldname => $img->storeAs($custom['storage'] ?? config('thumbnail.storage_path', 'uploads'), $imageStoreName, 'public'), // Storing Parent Image
-            ]);
+            /* ----------------------------------------Parent Image Upload----------------------------------------- */
+            $this->uploadImage($fieldname, $custom); // Upload Parent Image
             /* --------------------------------------------------------------------------------------------- */
-
-            $image = Image::cache(function ($cached_img) use ($image_file, $custom) {
-                return $cached_img->make($image_file->getRealPath())->fit($custom['width'] ?? config('thumbnail.img_width', 1000), $custom['height'] ?? config('thumbnail.img_height', 800)); //Parent Image Interventing
-            }, config('thumbnail.image_cached_time', 10), true);
-            $image->save(public_path('storage/'.$this->$fieldname), $custom['quality'] ?? config('thumbnail.image_quality', 80)); // Parent Image Locating Save
-
             if (config('thumbnail.thumbnail', true)) {
                 $thumbnails = false;
-                $thumbnails = $custom['thumbnails'] ?? config('thumbnail.thumbnails', false) ?? false;
-                $storage = $custom['storage'] ?? config('thumbnail.storage_path', 'uploads') ?? false;
+                $thumbnails = $custom['thumbnails'] ?? config('thumbnail.thumbnails') ?? false; // Grab Thumbnails
+                $storage = $custom['storage'] ?? config('thumbnail.storage_path', 'uploads') ?? false; // Grab Storage Info
                 if ($thumbnails) {
                     /* -----------------------------------------Custom Thumbnails------------------------------------------------- */
                     $this->makeCustomThumbnails($image_file, $imageStoreNameOnly, $extension, $storage, $thumbnails);
-                /* -------------------------------------------------------------------------------------------------- */
+                    /* -------------------------------------------------------------------------------------------------- */
                 } else {
                     /* ---------------------------------------Default Thumbnails--------------------------------------- */
                     $this->makeDefaultThumbnails($image_file, $extension, $imageStoreNameOnly);
@@ -60,14 +47,14 @@ trait Thumbnail
         $img = Image::cache(function ($cached_img) use ($image_file, $width, $height) {
             return $cached_img->make($image_file->getRealPath())->fit($width, $height);
         }, config('thumbnail.image_cached_time', 10), true); //Storing Thumbnail
-        $img->save(public_path('storage/'.$image), $quality); //Storing Thumbnail
+        $img->save(public_path('storage/' . $image), $quality); //Storing Thumbnail
     }
 
     // Make Custom Thumbnail
     private function makeCustomThumbnails($image_file, $imageStoreNameOnly, $extension, $storage, $thumbnails)
     {
         foreach ($thumbnails as $thumbnail) {
-            $customthumbnail = $imageStoreNameOnly.'-'.str_replace('-', '', $thumbnail['thumbnail-name']).'.'.$extension; // Making Thumbnail Name
+            $customthumbnail = $imageStoreNameOnly . '-' . str_replace('-', '', $thumbnail['thumbnail-name']) . '.' . $extension; // Making Thumbnail Name
             $this->makeImg(
                 $image_file,
                 $customthumbnail,
@@ -84,10 +71,10 @@ trait Thumbnail
     {
         /* --------------------- Thumbnail Info---------------------------------------- */
         //small thumbnail name
-        $smallthumbnail = $imageStoreNameOnly.'-small'.'.'.$extension; // Making Thumbnail Name
+        $smallthumbnail = $imageStoreNameOnly . '-small' . '.' . $extension; // Making Thumbnail Name
 
         //medium thumbnail name
-        $mediumthumbnail = $imageStoreNameOnly.'-medium'.'.'.$extension; // Making Thumbnail Name
+        $mediumthumbnail = $imageStoreNameOnly . '-medium' . '.' . $extension; // Making Thumbnail Name
 
         // Medium Thumbnail
         $this->makeImg(
@@ -110,6 +97,41 @@ trait Thumbnail
         );
 
         /* ------------------------------------------------------------------------------------- */
+    }
+
+    /* Image Upload Process Info */
+    private function image_info($image_file)
+    {
+        $filenamewithextension = $image_file->getClientOriginalName(); //Retriving Full Image Name
+        $raw_filename = pathinfo($filenamewithextension, PATHINFO_FILENAME); //Retriving Image Raw Filename only
+        $filename = str_replace(['-', ' '], '', $raw_filename); // Retrive Filename
+        $extension = $image_file->getClientOriginalExtension(); //Retriving Image extension
+        $imageStoreNameOnly = $filename . '-' . time(); //Making Image Store name
+        $imageStoreName = $filename . '-' . time() . '.' . $extension; //Making Image Store name
+
+        $image_info['filenamewithextension'] = $filenamewithextension;
+        $image_info['raw_filename'] = $raw_filename;
+        $image_info['filename'] = $filename;
+        $image_info['extension'] = $extension;
+        $image_info['imageStoreNameOnly'] = $imageStoreNameOnly;
+        $image_info['imageStoreName'] = $imageStoreName;
+        return json_decode(json_encode($image_info));
+    }
+
+    // Upload Parent Image
+    public function uploadImage($fieldname = 'image', $custom = [])
+    {
+        $image_file = $custom['image'] ?? request()->file($fieldname); // Retriving Image File
+        $img = $custom['image'] ?? request()->$fieldname;
+        $imageStoreName = $this->image_info($image_file)->imageStoreName;
+        $this->update([
+            $fieldname => $img->storeAs($custom['storage'] ?? config('thumbnail.storage_path', 'uploads'), $imageStoreName, 'public'), // Storing Parent Image
+        ]);
+
+        $image = Image::cache(function ($cached_img) use ($image_file, $custom) {
+            return $cached_img->make($image_file->getRealPath())->fit($custom['width'] ?? config('thumbnail.img_width', 1000), $custom['height'] ?? config('thumbnail.img_height', 800)); //Parent Image Interventing
+        }, config('thumbnail.image_cached_time', 10), true);
+        $image->save(public_path('storage/' . $this->$fieldname), $custom['quality'] ?? config('thumbnail.image_quality', 80)); // Parent Image Locating Save
     }
 
     // Thumbnail Path
@@ -142,21 +164,21 @@ trait Thumbnail
         $image = $this->$fieldname;
         $path = explode('/', $image);
         $extension = \File::extension($image);
-        $name = basename($image, '.'.$extension);
-        $image_fullname = isset($size) ? $name.'-'.(string) $size.'.'.$extension : $name.'.'.$extension;
+        $name = basename($image, '.' . $extension);
+        $image_fullname = isset($size) ? $name . '-' . (string) $size . '.' . $extension : $name . '.' . $extension;
         array_pop($path);
         $location = implode('/', $path);
-        $path = 'storage/'.$location.'/'.$image_fullname;
-        $image_files = File::files(public_path('storage/'.$location));
-        $images_property = $this->imageProperty($image_files);
+        $path = 'storage/' . $location . '/' . $image_fullname;
+        $image_files = File::files(public_path('storage/' . $location));
+        $images_property = $this->imageProperty($image_files, $name);
         $image_detail = [
             'image'     => $image,
             'name'      => $name,
             'fullname'  => $image_fullname,
             'extension' => $extension,
             'path'      => $path,
-            'directory' => public_path('storage/'.$location),
-            'location'  => public_path('storage/'.$image),
+            'directory' => public_path('storage/' . $location),
+            'location'  => public_path('storage/' . $image),
             'property'  => $images_property,
         ];
 
@@ -164,34 +186,55 @@ trait Thumbnail
     }
 
     // Image Property
-    private function imageProperty($image_files)
+    private function imageProperty($image_files, $parent_name)
     {
-        $thumbnail_count = 0;
+
         $images_property = [];
         $thumbnails_property = [];
+        $thumbnail_count = 0;
         foreach ($image_files as $image) {
             $image_partition = explode('-', basename($image));
-            if (isset($image_partition[2])) {
-                $thumbnails_property['image'] = $image->getFilename() ?? null;
-                $thumbnails_property['real_name'] = $image_partition[0];
-                $thumbnails_property['size'] = $image->getSize();
-                $thumbnails_property['created_date'] = isset($image_partition[1]) ? Carbon::createFromFormat('Y/m/d H:i:s', date('Y/m/d H:i:s', (int) $image_partition[1])) : null;
-                $thumbnails_property['directory'] = $image->getPath();
-                $thumbnails_property['location'] = $image->getRealPath();
+            $parent_thumbnail_name = $image_partition[0] . '-' . $image_partition[1];
+            if ($parent_name == $parent_thumbnail_name) {
+                $thumbnail_count++;
                 $thumbnail_exists = $this->imageExists($image);
-                $images_property['has_thumbnail'] = $thumbnail_exists || $this->imageExists($image);
-                $images_property['thumbnail_count'] = $thumbnail_count + 1;
-            } else {
+                if (isset($image_partition[2])) {
+                    $thumbnails_property['image'] = $image->getFilename() ?? null;
+                    $thumbnails_property['real_name'] = $image_partition[0];
+                    $thumbnails_property['size'] = $image->getSize();
+                    $thumbnails_property['created_date'] = isset($image_partition[1]) ? Carbon::createFromFormat('Y/m/d H:i:s', date('Y/m/d H:i:s', (int) $image_partition[1])) : null;
+                    $thumbnails_property['directory'] = $image->getPath();
+                    $thumbnails_property['location'] = $image->getRealPath();
+                    $images_property['has_thumbnail'] = $thumbnail_exists || $this->imageExists($image);
+                    $images_property['thumbnail_count'] = $thumbnail_count;
+                    $thumbnails[] = $thumbnails_property;
+                    $images_property['thumbnails'] = $thumbnails;
+                }
+            } elseif ($image->getFileNameWithoutExtension() == $parent_name) {
+                $images_property['has_thumbnail'] = ($thumbnail_exists ?? false);
                 $images_property['real_name'] = $image_partition[0];
                 $images_property['size'] = $image->getSize();
                 $images_property['directory'] = $image->getPath();
                 $images_property['location'] = $image->getRealPath();
-            }
-            if (isset($image_partition[2])) {
-                $images_property['thumbnails'] = $thumbnails_property;
+            } else {
+                false;
             }
         }
 
         return $images_property;
+    }
+
+    // Hard Delete
+    public function hardDelete($fieldname = 'image'): void
+    {
+        if (File::exists($this->imageDetail($fieldname)->location)) {
+            if ($this->imageDetail($fieldname)->property->has_thumbnail) {
+                foreach ($this->imageDetail($fieldname)->property->thumbnails as $thumbnail) {
+                    File::exists($thumbnail->location) ? File::delete($thumbnail->location) : '';
+                }
+            }
+            File::exists($this->imageDetail($fieldname)->location) ? File::delete($this->imageDetail($fieldname)->location) : false;
+        }
+        $this->delete();
     }
 }
