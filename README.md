@@ -1,6 +1,6 @@
 ![Laravel Thumbnails](https://github.com/pratiksh404/laravel-thumbnails/blob/master/img/laravel-thumbnail.png)
 
-[![Issues](https://img.shields.io/github/issues/pratiksh404/laravel-thumbnails)](https://github.com/pratiksh404/laravel-thumbnails/issues) [![Stars](https://img.shields.io/github/stars/pratiksh404/laravel-thumbnails)](https://github.com/pratiksh404/laravel-thumbnails/stargazers) [![Latest Stable Version](https://poser.pugx.org/drh2so4/thumbnail/v)](//packagist.org/packages/drh2so4/thumbnail) [![StyleCI](https://github.styleci.io/repos/270181879/shield?branch=master)](https://github.styleci.io/repos/270181879?branch=master) [![Total Downloads](https://poser.pugx.org/drh2so4/thumbnail/downloads)](//packagist.org/packages/drh2so4/thumbnail) [![License](https://poser.pugx.org/drh2so4/thumbnail/license)](//packagist.org/packages/drh2so4/thumbnail) [![Laravel News](https://img.shields.io/badge/Featured-Laravel%20News-blue)](https://github.com/pratiksh404)
+[![Stars](https://img.shields.io/github/stars/pratiksh404/laravel-thumbnails)](https://github.com/pratiksh404/laravel-thumbnails/stargazers) [![Latest Stable Version](https://poser.pugx.org/drh2so4/thumbnail/v)](//packagist.org/packages/drh2so4/thumbnail) [![StyleCI](https://github.styleci.io/repos/270181879/shield?branch=master)](https://github.styleci.io/repos/270181879?branch=master) [![Build Status](https://scrutinizer-ci.com/g/pratiksh404/laravel-thumbnails/badges/build.png?b=master)](https://scrutinizer-ci.com/g/pratiksh404/laravel-thumbnails/build-status/master) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/pratiksh404/laravel-thumbnails/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/pratiksh404/laravel-thumbnails/?branch=master) [![Total Downloads](https://poser.pugx.org/drh2so4/thumbnail/downloads)](//packagist.org/packages/drh2so4/thumbnail) [![License](https://poser.pugx.org/drh2so4/thumbnail/license)](//packagist.org/packages/drh2so4/thumbnail) [![Laravel News](https://img.shields.io/badge/Featured-Laravel%20News-blue)](https://github.com/pratiksh404)
 
 ## Laravel Thumbnail Generator
 
@@ -11,7 +11,7 @@ Package for uploading the image and saving that image along with it's thumbnail.
 - Uploads Image
 - Make its thumbnail i.e low quality, resized version of its parent image
 
-## Why use thubnails ?
+## Why use thumbnails ?
 
 The small file size of thumbnails makes it possible for website designers to offer visitors a lot of content immediately without increasing the loading time of the page.
 Also why use full glory of that image if you just have to crunched it up to tiny space... Use thumbnail.
@@ -284,6 +284,26 @@ $image->hasThumbnail('image','small'); // Second paremater is thumbnail size che
 $image->thumbnailCount('image');
 ```
 
+### Hard Delete Image with Thumbnails
+
+```sh
+$image->imageDetail('image'); // First parameter is db attribute name for image
+```
+
+### Upload Only Umage
+
+```sh
+$solo_image = [
+                'storage' => 'solo',
+                'width' => '600',
+                'height' => '300',
+                'quality' => '70',
+            ];
+            $image->uploadImage('image', $solo_image); // Second Parameter is not necessary if default settings is to be applied
+            // OR
+            $image->uploadImage('image'); // Image Upload with default setting
+```
+
 Our config file looks like follows :-
 
 ```sh
@@ -368,7 +388,6 @@ return [
             "thumbnail-height" => 300,
             "thumbnail-quality" => 30
         ],
-        "thumbnails_storage" => "uploads",
         ] */
 ];
 
