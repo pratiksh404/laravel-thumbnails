@@ -43,10 +43,15 @@ class Image extends Model
 
 ```
 
-This model initially consists of two methods :-
+This model consists of following methods :-
 
 - makeThumbnail
 - thumbnail
+- uploadImage
+- hasThumbnail
+- thumbnailCount
+- imageDetail
+- hardDelete
 
 ### Usages
 
@@ -55,7 +60,6 @@ Package utilizes it's trait method, let us guide you to use that
 ## makeThumbnail
 
 This method is responsible for actually uploading the image and making its thumbnail.
-It takes one parameter i.e image fieldname (default = "image").
 
 ```sh
     public function store(Request $request)
@@ -287,7 +291,13 @@ $image->thumbnailCount('image');
 ### Hard Delete Image with Thumbnails
 
 ```sh
-$image->imageDetail('image'); // First parameter is db attribute name for image
+$image->hardDelete('image'); // First parameter is db attribute name for image
+```
+
+### Hard Delete Image with Thumbnails adn its parent
+
+```sh
+$image->hardDeleteWithParent('image'); // First parameter is db attribute name for image
 ```
 
 ### Upload Only Umage
