@@ -193,11 +193,11 @@ trait Thumbnail
         $thumbnails_property = [];
         $thumbnail_count = 0;
         foreach ($image_files as $image) {
-			
-			if (strpos(basename($image),'-')===false)
+            if (strpos(basename($image), '-') === false) {
                 continue;
-			
-			$image_partition = explode('-', basename($image));
+            }
+
+            $image_partition = explode('-', basename($image));
             $parent_thumbnail_name = $image_partition[0].'-'.$image_partition[1];
             if ($parent_name == $parent_thumbnail_name) {
                 $thumbnail_count++;
@@ -221,7 +221,6 @@ trait Thumbnail
                 $images_property['directory'] = $image->getPath();
                 $images_property['location'] = $image->getRealPath();
             } else {
-                false;
             }
         }
 
