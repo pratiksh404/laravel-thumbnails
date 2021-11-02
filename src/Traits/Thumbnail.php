@@ -193,6 +193,10 @@ trait Thumbnail
         $thumbnails_property = [];
         $thumbnail_count = 0;
         foreach ($image_files as $image) {
+            if (strpos(basename($image), '-') === false) {
+                continue;
+            }
+
             $image_partition = explode('-', basename($image));
             if (isset($image_partition[0]) && isset($image_partition[1])) {
                 $parent_thumbnail_name = $image_partition[0] . '-' . $image_partition[1];
@@ -220,6 +224,16 @@ trait Thumbnail
                 } else {
                     false;
                 }
+<<<<<<< HEAD
+=======
+            } elseif ($image->getFileNameWithoutExtension() == $parent_name) {
+                $images_property['has_thumbnail'] = ($thumbnail_exists ?? false);
+                $images_property['real_name'] = $image_partition[0];
+                $images_property['size'] = $image->getSize();
+                $images_property['directory'] = $image->getPath();
+                $images_property['location'] = $image->getRealPath();
+            } else {
+>>>>>>> 94f9e4ef079b4931c009b07795355fd734127dff
             }
         }
 
