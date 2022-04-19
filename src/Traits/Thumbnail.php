@@ -44,7 +44,15 @@ trait Thumbnail
     {
         $image = $image_file->storeAs($location, $name, 'public'); // Thumbnail Storage Information
         $img = Image::cache(function ($cached_img) use ($image_file, $width, $height) {
-            return $cached_img->make($image_file->getRealPath())->fit($width, $height);
+            $baseImage = $cached_img->make($image_file->getRealPath());
+            if (config('thumbnail.keep_aspect_ratio')) {
+                return $baseImage->resize($width, $height, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                });
+            } else {
+                return $baseImage->fit($width, $height);
+            }
         }, config('thumbnail.image_cached_time', 10), true); //Storing Thumbnail
         $img->save(public_path('storage/'.$image), $quality); //Storing Thumbnail
     }
@@ -129,7 +137,17 @@ trait Thumbnail
         ]);
 
         $image = Image::cache(function ($cached_img) use ($image_file, $custom) {
-            return $cached_img->make($image_file->getRealPath())->fit($custom['width'] ?? config('thumbnail.img_width', 1000), $custom['height'] ?? config('thumbnail.img_height', 800)); //Parent Image Interventing
+            $height = $custom['height'] ?? config('thumbnail.img_height', 800);
+            $width = $custom['width'] ?? config('thumbnail.img_width', 1000);
+            $baseImage = $cached_img->make($image_file->getRealPath());
+            if (config('thumbnail.keep_aspect_ratio')) {
+                return $baseImage->resize($width, $height, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                }); //Parent Image Interventing
+            } else {
+                return $baseImage->fit($width, $height); //Parent Image Interventing
+            }
         }, config('thumbnail.image_cached_time', 10), true);
         $image->save(public_path('storage/'.$this->getRawOriginal($fieldname)), $custom['quality'] ?? config('thumbnail.image_quality', 80)); // Parent Image Locating Save
     }
